@@ -1,0 +1,76 @@
+
+class Motor():
+    __motor_id_number = 0 # universal increments everytime we add a motor and assigns on constructor 
+
+    def __init__(self, direction_pin = -1, pwm_pin = -1,  max = 400, min = 0) -> None:
+        self.__motor_id = Motor.__motor_id_number # assign int ID to motor instance
+        self.__direction_pin = direction_pin
+        self.__pwm_pin = pwm_pin
+
+        if(max >= min):
+            self.__max_rotation = max # assign max rotation
+            self.__min_rotation = min # assing min rotation
+        else:
+            raise RuntimeWarning("max rotation value set less than min rotation value")
+        
+        Motor.__motor_id_number = Motor.__motor_id_number + 1 # increment static int ID
+        pass # not needed but for someone who has been coding C it is nice to have a seperator
+
+    @classmethod # when requested will return the id of the next motor to be instantiated
+    def get_next_motor_id(self) -> int:
+        return self.__motor_id_number
+
+    # used by moving functions to set current position in rotation, this function does not change position
+    # it only stores what sensors are telling us the position is.
+    def set_current_position(self, position:int) -> None:
+        self.__current_position = position
+        pass
+    
+    # set maximum point to which the motor should rotate, there should be movement functions which check if these have been violated
+    def set_max_rotation(self, max: int) -> None:
+        if(max >= self.__min_rotation):
+            self.__max_rotation = max
+        else:
+            raise RuntimeWarning("max rotation value set less than min rotation value")
+        pass
+
+    # set minimum point to which the motor should rotate, there should be movement functions which check if these have been violated
+    def set_min_rotation(self, min: int) -> None:
+        if(min <= self.__max_rotation):
+            self.__min_rotation = min
+        else:
+            raise RuntimeWarning("min rotation value set greater than max rotation value")
+        pass
+    
+    # set pin which manages direction 
+    def set_direction_pin(self, direction_pin: int) -> None:
+        self.__direction_pin = direction_pin
+        pass
+
+    # set pin used to provide PWM signal to motor
+    def set_pwm_pin(self, pwm_pin: int) -> None:
+        self.__pwm_pin = pwm_pin
+        pass
+    
+    
+    def get_direction_pin(self) -> int:
+        return self.__direction_pin
+
+    def get_pwm_pin(self) -> int:
+        return self.__pwm_pin
+
+    # functions for retrieving stored position data and motor ids
+    def get_current_position(self) -> int:
+        return self.__current_position
+
+    def get_motor_id(self) -> int:
+        return self.__motor_id
+
+    def get_max_rotation(self) -> int:
+        return self.__max_rotation
+    
+    def get_min_rotation(self) -> int:
+        return self.__min_rotation
+    
+
+

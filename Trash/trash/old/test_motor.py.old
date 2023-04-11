@@ -1,0 +1,40 @@
+import pytest
+from trash.motor import Motor
+
+def test_create_motor_no_arguments_check_id():
+    testMotor = Motor()
+    assert testMotor.get_motor_id() == Motor.get_next_motor_id() - 1 # compare id of motor created with the id that it says it should have
+
+def test_create_motor_with_instantiating_min_and_max_check_id():
+    testMotor = Motor(max = 100, min = 10)
+    assert testMotor.get_motor_id() == Motor.get_next_motor_id() - 1 # compare id of motor created with the id that it says it should have
+
+def test_create_motor_with_instantiating_min_max_pwm_direction_check_id():
+    testMotor = Motor(22, 2, 100, 30)
+    assert testMotor.get_motor_id() == Motor.get_next_motor_id() - 1 # compare id of motor created with the id that it says it should have
+
+def test_create_motor_with_instantiating_min_max_pwm_direction_check_pwm_pin():
+    testMotor = Motor(22, 2, 100, 30)
+    assert testMotor.get_pwm_pin() == 2 
+
+def test_create_motor_with_instantiating_min_max_pwm_direction_check_pwm_pin():
+    testMotor = Motor(23, 3, 100, 30)
+    assert testMotor.get_direction_pin() == 23 
+
+def test_create_motor_with_instantiating_min_and_max_check_is_max_set():
+    testMotor = Motor(max = 100, min = 10)
+    assert testMotor.get_max_rotation() == 100
+
+def test_create_motor_with_instantiating_min_and_max_check_is_min_set():
+    testMotor = Motor(max = 100, min = 15)
+    assert testMotor.get_min_rotation() == 15
+
+def test_create_motor_no_arguments_set_max_rotation():
+    testMotor = Motor()
+    testMotor.set_max_rotation(42)
+    assert testMotor.get_max_rotation() == 42
+
+def test_create_motor_no_arguments_set_min_rotation():
+    testMotor = Motor()
+    testMotor.set_min_rotation(45)
+    assert testMotor.get_min_rotation() == 45

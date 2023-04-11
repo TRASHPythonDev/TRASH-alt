@@ -1,0 +1,128 @@
+# contains functions and lists for managing motors, motor behavior related files use this file
+
+from motor import Motor
+
+
+class ListManager():
+
+    def __init__(self) -> None:
+        self.__master_list = []
+        self.__stepper_ready_list = []
+        self.__stepper_moving_list = [] 
+        self.__dc_motor_ready_list = []
+        self.__dc_motor_moving_list = [] 
+        pass
+
+    # creates a new motor object and adds it to the master list, then adds its id to a stepper list identifying it as a stepper 
+    def add_stepper(self, motor: Motor) -> None:
+        self.__master_list.append(motor)
+        self.__stepper_ready_list.append(motor.get_motor_id())
+        pass
+
+    # creates a new motor object and adds it to the master list, then adds its id to a dc motor list identifying it as a dc motor 
+    def add_dc_motor(self, motor: Motor) -> None:
+        self.__master_list.append(motor)
+        self.__dc_motor_ready_list.append(motor.get_motor_id())
+        pass
+
+    def remove_motor(self, id:int) -> None:
+        self.__master_list.remove(self.get_master_data_by_id(id))
+        if(self.get_if_id_in_stepper_ready_list(id)):
+            self.__stepper_ready_list.remove(id)
+        if(self.get_if_id_in_stepper_moving_list(id)):
+            self.__stepper_moving_list.remove(id)
+        if(self.get_if_id_in_dc_motor_ready_list(id)):
+            self.__dc_motor_ready_list.remove(id)
+        if(self.get_if_id_in_dc_motor_moving_list(id)):
+            self.__dc_motor_moving_list.remove(id)
+        pass
+
+    # stepper related id in list functions
+
+    # checks if given id is in the stepper ready list
+    def get_if_id_in_stepper_ready_list(self, id:int) -> bool:
+        return True if id in self.__stepper_ready_list else False
+
+    # checks if given id is in the stepper moving list
+    def get_if_id_in_stepper_moving_list(self, id:int) -> bool:
+        return True if id in self.__stepper_moving_list else False
+    
+    # checks if given id is in either stepper related list if not then it isn't a stepper
+    def get_if_stepper(self, id:int) -> bool:
+        return self.get_if_id_in_stepper_ready_list(id) and self.get_if_id_in_stepper_moving_list(id)
+    
+        
+    # dc motor related id in list functions
+
+    # checks if given id is in the dc motor ready list
+    def get_if_id_in_dc_motor_ready_list(self, id:int) -> bool:
+        return True if id in self.__dc_motor_ready_list else False
+
+    # checks if given id is in the dc motor moving list
+    def get_if_id_in_dc_motor_moving_list(self, id:int) -> bool:
+        return True if id in self.__dc_motor_moving_list else False
+    
+    # checks if given id is in either dc motor related list if not then it isn't a dc motor
+    def get_if_dc_motor(self, id:int) -> bool:
+        return self.get_if_id_in_dc_motor_ready_list(id) and self.get_if_id_in_dc_motor_moving_list(id)
+    
+        
+    def move_to_moving(self, id:int) -> None:
+        if(self.get_if_id_in_stepper_ready_list(id)):
+            self.__stepper_moving_list.append(id)
+            self.__stepper_ready_list.remove(id)
+        elif(self.get_if_id_in_dc_motor_ready_list(id)):
+            self.__dc_motor_moving_list.append(id)
+            self.__dc_motor_ready_list.remove(id)
+        elif(self.get_if_id_in_stepper_moving_list(id)):
+            raise RuntimeError("Stepper already moving")
+        elif(self.get_if_id_in_dc_motor_moving_list(id)):
+            raise RuntimeError("Dc motor already moving")
+        else:
+            raise LookupError("Motor not in any list")
+        pass
+
+    def move_to_ready(self, id:int) -> None:
+        if id in self.__stepper_moving_list:
+            self.__stepper_ready_list.append(id)
+            self.__stepper_moving_list.remove(id)
+        elif id in self.__dc_motor_moving_list:
+            self.__dc_motor_ready_list.append(id)
+            self.__dc_motor_moving_list.remove(id)
+        elif id in self.__stepper_ready_list:
+            raise RuntimeError("Stepper already ready")
+        elif id in self.__dc_motor_ready_list:
+            raise RuntimeError("Dc motor already ready")
+        else:
+            raise LookupError("Motor not in any list")
+        pass
+
+    def get_master_data_by_id(self, id:int) -> Motor:
+        for i in self.__master_list:
+            if(i.get_motor_id() == id): # lookup id for motor item in list and compare to given id
+                return i
+            else:
+                raise LookupError("Motor not in list")
+
+
+    # get list functions
+
+    def get_master_list(self) -> list:
+        return self.__master_list
+
+    def get_stepper_ready_list(self) -> list:
+        return self.__stepper_ready_list
+    
+    def get_stepper_moving_list(self) -> list:
+        return self.__stepper_moving_list
+
+    def get_dc_motor_ready_list(self) -> list:
+        return self.__dc_motor_ready_list
+
+    def get_dc_motor_moving_list(self) -> list:
+        return self.__dc_motor_moving_list
+
+
+    
+
+

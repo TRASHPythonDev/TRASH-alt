@@ -1,0 +1,21 @@
+import pytest
+#from pyfirmata import Arduino, util
+
+class BasicMovement:
+
+    def __init__(self) -> None:
+        pass
+
+        
+    def closeHand(self, amt: int) -> None:
+        #rotate motor till max force met
+        #for fingers in hand
+        #turn on motors 
+        #compare force to each until max for each
+        pass
+
+    def getHandClosed(self) -> bool:
+        return True
+    
+    
+

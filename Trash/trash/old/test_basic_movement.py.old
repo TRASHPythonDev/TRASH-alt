@@ -1,0 +1,9 @@
+import pytest
+from trash.basicmovement import BasicMovement
+
+def test_closeHand():
+    testMove = BasicMovement()
+    # tests close functionality
+    testMove.closeHand(10)
+    assert testMove.getHandClosed() == True
+

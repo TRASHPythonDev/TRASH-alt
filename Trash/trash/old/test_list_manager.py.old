@@ -1,0 +1,235 @@
+import pytest
+from trash.list_manager import ListManager
+from trash.motor import Motor
+
+def test_list_manager_instantiation_no_arguments_does_create_master_list():
+    testListManager = ListManager()
+    assert len(testListManager.get_master_list()) == 0 # should be empty, but exist
+
+def test_list_manager_instantiation_no_arguments_does_create_stepper_ready_list():
+    testListManager = ListManager()
+    assert len(testListManager.get_stepper_ready_list()) == 0 # should be empty, but exist
+
+def test_list_manager_instantiation_no_arguments_does_create_stepper_moving_list():
+    testListManager = ListManager()
+    assert len(testListManager.get_stepper_moving_list()) == 0 # should be empty, but exist
+
+def test_list_manager_instantiation_no_arguments_does_create_dc_motor_ready_list():
+    testListManager = ListManager()
+    assert len(testListManager.get_dc_motor_ready_list()) == 0 # should be empty, but exist
+
+def test_list_manager_instantiation_no_arguments_does_create_dc_motor_moving_list():
+    testListManager = ListManager()
+    assert len(testListManager.get_dc_motor_moving_list()) == 0 # should be empty, but exist
+
+def test_access_outside_of_range_master():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    assert maxid + 1 not in testListManager.get_stepper_ready_list()
+    with pytest.raises(LookupError):
+        testListManager.get_master_data_by_id(maxid + 1)
+
+def test_add_stepper_to_master_list_check_in_master_list():
+    testMotor = Motor()
+    testListManager = ListManager()
+    testListManager.add_stepper(testMotor)
+    id = testListManager.get_master_list()[0].get_motor_id()
+    assert testMotor.get_motor_id() == id
+
+def test_add_stepper_to_master_list_check_id_in_stepper_list():
+    testMotor = Motor()
+    testListManager = ListManager()
+    testListManager.add_stepper(testMotor)
+    id = testListManager.get_master_list()[0].get_motor_id()
+    assert id in testListManager.get_stepper_ready_list()
+
+def test_add_multiple_steppers_to_master_list_check_length_master_list_correct():
+    testListManager = ListManager()
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+    assert len(testListManager.get_master_list()) == 20
+
+def test_add_multiple_steppers_to_master_list_check_length_stepper_list_correct():
+    testListManager = ListManager()
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+    assert len(testListManager.get_stepper_ready_list()) == 20
+
+def test_pre_move_stepper_to_moving_list_max_id_value_in_stepper_ready_list_true():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    assert testListManager.get_if_id_in_stepper_ready_list(maxid) == True
+
+def test_pre_move_stepper_to_moving_list_max_id_value_in_stepper_moving_list_false():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    assert testListManager.get_if_id_in_stepper_moving_list(maxid)== False
+
+def test_post_move_stepper_to_moving_list_max_id_value_in_stepper_ready_list_false():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    testListManager.move_to_moving(maxid)
+    assert testListManager.get_if_id_in_stepper_ready_list(maxid) == False
+
+def test_post_move_stepper_to_moving_list_max_id_value_in_stepper_moving_list_true():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    testListManager.move_to_moving(maxid)
+    assert testListManager.get_if_id_in_stepper_moving_list(maxid)== True
+
+def test_pre_move_stepper_to_moving_list_mid_id_value_in_stepper_ready_list_true():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    midid = maxid - 10
+    assert testListManager.get_if_id_in_stepper_ready_list(midid) == True
+
+def test_pre_move_stepper_to_moving_list_mid_id_value_in_stepper_moving_list_false():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    midid = maxid - 10
+    assert testListManager.get_if_id_in_stepper_moving_list(midid)== False
+
+def test_post_move_stepper_to_moving_list_mid_id_value_in_stepper_ready_list_false():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    midid = maxid - 10
+    testListManager.move_to_moving(midid)
+    assert testListManager.get_if_id_in_stepper_ready_list(midid) == False
+
+def test_post_move_stepper_to_moving_list_mid_id_value_in_stepper_moving_list_true():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    midid = maxid - 10
+    testListManager.move_to_moving(midid)
+    assert testListManager.get_if_id_in_stepper_moving_list(midid)== True
+
+def test_pre_move_stepper_to_moving_list_min_id_value_value_in_stepper_ready_list_true():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    minid = maxid - 19
+    assert testListManager.get_if_id_in_stepper_ready_list(minid) == True
+
+def test_pre_move_stepper_to_moving_list_min_id_value_value_in_stepper_moving_list_false():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    minid = maxid - 19
+    assert testListManager.get_if_id_in_stepper_moving_list(minid)== False
+
+def test_post_move_stepper_to_moving_list_min_id_value_value_in_stepper_ready_list_false():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    minid = maxid - 19
+    testListManager.move_to_moving(minid)
+    assert testListManager.get_if_id_in_stepper_ready_list(minid) == False
+
+def test_post_move_stepper_to_moving_list_min_id_value_value_in_stepper_moving_list_true():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    minid = maxid - 19
+    testListManager.move_to_moving(minid)
+    assert testListManager.get_if_id_in_stepper_moving_list(minid)== True
+
+def test_remove_stepper_from_master_list():
+    testMotor = Motor()
+    testListManager = ListManager()
+    testListManager.add_stepper(testMotor)
+    id = testMotor.get_motor_id()
+    assert testListManager.remove_motor(id) == None
+
+def test_pre_move_stepper_to_ready_list_max_id_value_value_in_stepper_moving_list_true():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    testListManager.move_to_moving(maxid)
+    assert testListManager.get_if_id_in_stepper_moving_list(maxid)== True
+
+def test_pre_move_stepper_to_ready_list_max_id_value_value_in_stepper_ready_list_false():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    testListManager.move_to_moving(maxid)
+    assert testListManager.get_if_id_in_stepper_ready_list(maxid)== False
+
+def test_post_move_stepper_to_ready_list_max_id_value_value_in_stepper_moving_list_false():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    testListManager.move_to_moving(maxid)
+    testListManager.move_to_ready(maxid)
+    assert testListManager.get_if_id_in_stepper_moving_list(maxid)== False
+
+def test_post_move_stepper_to_ready_list_max_id_value_value_in_stepper_ready_list_true():
+    testListManager = ListManager()
+    maxid = 0
+    for _ in range(20):
+        newMotor = Motor()
+        testListManager.add_stepper(newMotor)
+        maxid = newMotor.get_motor_id()
+    testListManager.move_to_moving(maxid)
+    testListManager.move_to_ready(maxid)
+    assert testListManager.get_if_id_in_stepper_ready_list(maxid)== True
+
+

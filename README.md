@@ -54,10 +54,6 @@ Initializes a new instance of the `BasicMovement` class.
 
 Clears the reference to the board and clears the connection. Call this function before calling `del` on a `BasicMovement` instance.
 
-### `move()`
-
-Cycles all objects in the moving list and moves them. The rate at which this is called determines the base motor turning rate and sensor sample rate. Run this at a value around or below 0.0001 times per second.
-
 ### `move_motor_to_point(motor_id: int, destination: int, sensor_thresholds: list, rotation_direction=0, pwm_rate=0.05) -> int`
 
 Sets a motor to move to a given destination and stop when certain thresholds are met or when the destination is reached.
@@ -66,7 +62,11 @@ Sets a motor to move to a given destination and stop when certain thresholds are
 - `destination` (int): the destination in steps. If this is for a NEMA 17 stepper, then 400 is a full rotation.
 - `sensor_thresholds` (list): the threshold percentage of each sensor's range. If greater than 100, movement becomes blind. This is stored between calls.
 - `rotation_direction` (int): the rotation direction. Either 0 or 1.
-- `pwm_rate` (float): the PWM rate. This has only been tested for values >= 0.0001, which is ridiculously fast for a NEMA 17.
+- `pwm_rate` (float): the PWM rate. This has only been tested for values >= 0.0001.
+
+### `move()`
+
+Cycles all motors with pending move commands and moves them. The rate at which this is called determines the base motor turning rate and sensor sample rate. Run this at a value around or below 0.0001 times per second.
 
 ## Modules
 

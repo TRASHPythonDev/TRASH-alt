@@ -1,13 +1,17 @@
 # TRASH API
 
-This project is a Python API for controlling a robotic hand. The API functions are generic enough to allow for low-level stepper motor control. The API requires a usb to an arduino board running Firmata or Firmata Express. Sensor polling is handled automatically. 
+This project is a Python API designed to control a robotic hand using an Arduino running Firmata Express. 
+
+The API functions are generic enough to allow for low-level stepper motor control. The API requires a USB to an arduino board running Firmata or Firmata Express. 
+
+Sensor polling for the system is handled automatically; however, sensors must be configured in order to be used. 
 
 ## Installation
 
 Clone the repository and install the requirements:
 
 ```bash
-git clone https://github.com/<username>/<project>.git
+git clone https://github.com/TRASHPythonDev/TRASH-alt.git
 cd <project>
 pip install -r requirements.txt
 ```
@@ -17,11 +21,7 @@ pip install -r requirements.txt
 Import the necessary modules:
 
 ```python
-import motor
-from time import perf_counter
-from stepper_manager import StepperManager
-from sensor_manager import SensorManager
-from movement_arduino import BoardManager
+from basic_movement import BasicMovement
 ```
 
 Create an instance of the `BasicMovement` class:

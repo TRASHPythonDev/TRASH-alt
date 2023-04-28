@@ -30,16 +30,16 @@ Create an instance of the `BasicMovement` class:
 basic_movement = BasicMovement(board_id=1)
 ```
 
-To move the robotic hand, call the `move()` function:
-
-```python
-basic_movement.move()
-```
-
 To move a motor to a specific position, use the `move_motor_to_point()` function:
 
 ```python
 basic_movement.move_motor_to_point(motor_id, destination, sensor_thresholds, rotation_direction=0, pwm_rate=0.05)
+```
+
+To move, call the `move()` function:
+
+```python
+basic_movement.move()
 ```
 
 ## API Functions
